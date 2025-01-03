@@ -1,4 +1,5 @@
 #!/bin/bash
+#/opt/clams/getclams.sh
 set -euxo pipefail
 
 PROJECT="nochowderforyou/clams"
