@@ -1,4 +1,4 @@
-From b8b8b6955150a895c6654e745796d2a124209a43 Mon Sep 17 00:00:00 2001
+From bef0551fb68c6c59bd5d1eb86405ea96717397e4 Mon Sep 17 00:00:00 2001
 From: "Volm, David" <david.volm@base64labs.com>
 Date: Sun, 5 Jan 2025 08:22:28 -0600
 Subject: [PATCH] 	modified:   packages/openssl.mk 	new file:  
@@ -6,15 +6,15 @@ Subject: [PATCH] 	modified:   packages/openssl.mk 	new file:
  patches/openssl/openssl-1.0.1k-config.diff
 
 ---
- depends/packages/openssl.mk                           | 8 ++++++--
- depends/patches/openssl/openssl-1.0.1k-Configure.diff | 2 ++
- depends/patches/openssl/openssl-1.0.1k-config.diff    | 4 ++++
- 3 files changed, 12 insertions(+), 2 deletions(-)
+ depends/packages/openssl.mk                          | 12 ++++++++----
+ .../patches/openssl/openssl-1.0.1k-Configure.diff    |  2 ++
+ depends/patches/openssl/openssl-1.0.1k-config.diff   |  4 ++++
+ 3 files changed, 14 insertions(+), 4 deletions(-)
  create mode 100644 depends/patches/openssl/openssl-1.0.1k-Configure.diff
  create mode 100644 depends/patches/openssl/openssl-1.0.1k-config.diff
 
 diff --git a/depends/packages/openssl.mk b/depends/packages/openssl.mk
-index 5ee9f17a6..53f69a7eb 100644
+index 5ee9f17a6..96ade703a 100644
 --- a/depends/packages/openssl.mk
 +++ b/depends/packages/openssl.mk
 @@ -3,6 +3,7 @@ $(package)_version=1.0.1k
@@ -25,7 +25,7 @@ index 5ee9f17a6..53f69a7eb 100644
  
  define $(package)_set_vars
  $(package)_config_env=AR="$($(package)_ar)" RANLIB="$($(package)_ranlib)" CC="$($(package)_cc)"
-@@ -57,8 +58,11 @@ $(package)_config_opts_i686_mingw32=mingw
+@@ -57,16 +58,19 @@ $(package)_config_opts_i686_mingw32=mingw
  endef
  
  define $(package)_preprocess_cmds
@@ -39,6 +39,16 @@ index 5ee9f17a6..53f69a7eb 100644
  endef
  
  define $(package)_config_cmds
+-  ./Configure $($(package)_config_opts)
++  ./config
+ endef
+ 
+ define $(package)_build_cmds
+-  $(MAKE) -j1 build_libs libcrypto.pc libssl.pc openssl.pc
++  $(MAKE) -j$$(sysctl -n hw.physicalcpu) build_libs libcrypto.pc libssl.pc openssl.pc
+ endef
+ 
+ define $(package)_stage_cmds
 diff --git a/depends/patches/openssl/openssl-1.0.1k-Configure.diff b/depends/patches/openssl/openssl-1.0.1k-Configure.diff
 new file mode 100644
 index 000000000..77691d90a
