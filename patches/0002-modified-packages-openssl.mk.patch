@@ -1,0 +1,54 @@
+From d5a71ad02a760ef2bafc26020d1803d9e77063d1 Mon Sep 17 00:00:00 2001
+From: "Volm, David" <david.volm@base64labs.com>
+Date: Sun, 5 Jan 2025 08:22:28 -0600
+Subject: [PATCH] 	modified:   packages/openssl.mk 	new file:  
+ patches/openssl/openssl-1.0.1k-Configure.diff 	new file:  
+ patches/openssl/openssl-1.0.1k-config.diff
+
+---
+ depends/packages/openssl.mk                           | 7 +++++--
+ depends/patches/openssl/openssl-1.0.1k-Configure.diff | 2 ++
+ depends/patches/openssl/openssl-1.0.1k-config.diff    | 4 ++++
+ 3 files changed, 11 insertions(+), 2 deletions(-)
+ create mode 100644 depends/patches/openssl/openssl-1.0.1k-Configure.diff
+ create mode 100644 depends/patches/openssl/openssl-1.0.1k-config.diff
+
+diff --git a/depends/packages/openssl.mk b/depends/packages/openssl.mk
+index 5ee9f17a6..6d190e776 100644
+--- a/depends/packages/openssl.mk
++++ b/depends/packages/openssl.mk
+@@ -57,8 +57,11 @@ $(package)_config_opts_i686_mingw32=mingw
+ endef
+ 
+ define $(package)_preprocess_cmds
+-  sed -i.old "/define DATE/d" util/mkbuildinf.pl && \
+-  sed -i.old "s|engines apps test|engines|" Makefile.org
++  patch -p1 < $($(package)_patch_dir)/openssl-1.0.1k-Configure.diff \
++  && patch -p1 < $($(package)_patch_dir)/openssl-1.0.1k-config.diff \
++  && sed -i.old "/define DATE/d" util/mkbuildinf.pl && \
++  && sed -i.old "s|engines apps test|engines|" Makefile.org \
++  ;
+ endef
+ 
+ define $(package)_config_cmds
+diff --git a/depends/patches/openssl/openssl-1.0.1k-Configure.diff b/depends/patches/openssl/openssl-1.0.1k-Configure.diff
+new file mode 100644
+index 000000000..77691d90a
+--- /dev/null
++++ b/depends/patches/openssl/openssl-1.0.1k-Configure.diff
+@@ -0,0 +1,2 @@
++583a584
++> "darwin64-arm64-cc","cc:-arch arm64 -O3 -DL_ENDIAN -Wall::-D_REENTRANT:MACOSX:-Wl,-search_paths_first%:SIXTY_FOUR_BIT_LONG RC4_CHAR RC4_CHUNK DES_INT DES_UNROLL BF_PTR:${no_asm}:macosx:dlfcn:darwin-shared:-fPIC -fno-common:-arch arm64 -dynamiclib:.\$(SHLIB_MAJOR).\$(SHLIB_MINOR).dylib",
+diff --git a/depends/patches/openssl/openssl-1.0.1k-config.diff b/depends/patches/openssl/openssl-1.0.1k-config.diff
+new file mode 100644
+index 000000000..5932eab42
+--- /dev/null
++++ b/depends/patches/openssl/openssl-1.0.1k-config.diff
+@@ -0,0 +1,4 @@
++953c953
++< OUT="$PREFIX$OUT"
++---
++> OUT="darwin64-arm64-cc"
+-- 
+2.39.5 (Apple Git-154)
+

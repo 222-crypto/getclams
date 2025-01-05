@@ -1,4 +1,0 @@
-953c953
-< OUT="$PREFIX$OUT"
----
-> OUT="darwin64-arm64-cc"
