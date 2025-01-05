@@ -1,4 +1,4 @@
-From 919e61db31d471f97750fc0ae4d007d675c1b352 Mon Sep 17 00:00:00 2001
+From b604b792d07bcca6d440cd9873888194c9f574cb Mon Sep 17 00:00:00 2001
 From: "Volm, David" <david.volm@base64labs.com>
 Date: Sun, 5 Jan 2025 08:22:28 -0600
 Subject: [PATCH] 	modified:   packages/openssl.mk 	new file:  
@@ -6,18 +6,26 @@ Subject: [PATCH] 	modified:   packages/openssl.mk 	new file:
  patches/openssl/openssl-1.0.1k-config.diff
 
 ---
- depends/packages/openssl.mk                           | 7 +++++--
+ depends/packages/openssl.mk                           | 8 ++++++--
  depends/patches/openssl/openssl-1.0.1k-Configure.diff | 2 ++
  depends/patches/openssl/openssl-1.0.1k-config.diff    | 4 ++++
- 3 files changed, 11 insertions(+), 2 deletions(-)
+ 3 files changed, 12 insertions(+), 2 deletions(-)
  create mode 100644 depends/patches/openssl/openssl-1.0.1k-Configure.diff
  create mode 100644 depends/patches/openssl/openssl-1.0.1k-config.diff
 
 diff --git a/depends/packages/openssl.mk b/depends/packages/openssl.mk
-index 5ee9f17a6..032bccddd 100644
+index 5ee9f17a6..de03c1dc6 100644
 --- a/depends/packages/openssl.mk
 +++ b/depends/packages/openssl.mk
-@@ -57,8 +57,11 @@ $(package)_config_opts_i686_mingw32=mingw
+@@ -3,6 +3,7 @@ $(package)_version=1.0.1k
+ $(package)_download_path=https://www.openssl.org/source
+ $(package)_file_name=$(package)-$($(package)_version).tar.gz
+ $(package)_sha256_hash=8f9faeaebad088e772f4ef5e38252d472be4d878c6b3a2718c10a4fcebe7a41c
++$(package)_patches=openssl-1.0.1k-Configure.diff openssl-1.0.1k-config.diff
+ 
+ define $(package)_set_vars
+ $(package)_config_env=AR="$($(package)_ar)" RANLIB="$($(package)_ranlib)" CC="$($(package)_cc)"
+@@ -57,8 +58,11 @@ $(package)_config_opts_i686_mingw32=mingw
  endef
  
  define $(package)_preprocess_cmds
