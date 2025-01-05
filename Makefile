@@ -10,7 +10,7 @@ help:
 
 .PHONY: clean # 🫧
 clean:
-	rm -rf ./clam-*/
+	@bash -c "set -x && rm -rf ./clam-*/"
 	git clean -fdx
 
 
