@@ -1,4 +1,4 @@
-From b604b792d07bcca6d440cd9873888194c9f574cb Mon Sep 17 00:00:00 2001
+From b8b8b6955150a895c6654e745796d2a124209a43 Mon Sep 17 00:00:00 2001
 From: "Volm, David" <david.volm@base64labs.com>
 Date: Sun, 5 Jan 2025 08:22:28 -0600
 Subject: [PATCH] 	modified:   packages/openssl.mk 	new file:  
@@ -14,7 +14,7 @@ Subject: [PATCH] 	modified:   packages/openssl.mk 	new file:
  create mode 100644 depends/patches/openssl/openssl-1.0.1k-config.diff
 
 diff --git a/depends/packages/openssl.mk b/depends/packages/openssl.mk
-index 5ee9f17a6..de03c1dc6 100644
+index 5ee9f17a6..53f69a7eb 100644
 --- a/depends/packages/openssl.mk
 +++ b/depends/packages/openssl.mk
 @@ -3,6 +3,7 @@ $(package)_version=1.0.1k
@@ -31,8 +31,8 @@ index 5ee9f17a6..de03c1dc6 100644
  define $(package)_preprocess_cmds
 -  sed -i.old "/define DATE/d" util/mkbuildinf.pl && \
 -  sed -i.old "s|engines apps test|engines|" Makefile.org
-+  patch -p1 < $($(package)_patch_dir)/openssl-1.0.1k-Configure.diff \
-+  && patch -p1 < $($(package)_patch_dir)/openssl-1.0.1k-config.diff \
++  patch Configure <$($(package)_patch_dir)/openssl-1.0.1k-Configure.diff \
++  && patch config <$($(package)_patch_dir)/openssl-1.0.1k-config.diff \
 +  && sed -i.old "/define DATE/d" util/mkbuildinf.pl \
 +  && sed -i.old "s|engines apps test|engines|" Makefile.org \
 +  ;
