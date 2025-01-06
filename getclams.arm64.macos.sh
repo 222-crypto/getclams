@@ -30,6 +30,7 @@ if [ ! -d "${EXTRACTED_FOLDER_PATH}" ]; then
         git am ../../patches/0002-modified-packages-openssl.mk.patch
         git am ../../patches/0003-toolset-clang.patch
         git am ../../patches/0004-Add-ARM64-support.patch
+        git am ../../patches/20195.patch
         git am ../../patches/zlib-is-sneaky.patch
         git mv depends/ contrib/ && git commit -m 'git mv depends/ contrib/'
         # https://git.wownero.com/asymptotically/wownero/commit/7c7ccbd2a5379b18aeee1e8fec3c17edc43fc57e
@@ -67,12 +68,11 @@ cd ${EXTRACTED_FOLDER_PATH}
 ./autogen.sh
 
 cd depends
-make -j${NPROC} NO_QT=true NO_WALLET=true HOST=${HOST}
+make -j${NPROC} NO_QT=true HOST=${HOST}
 cd ..
 
 ./configure \\
     --prefix=${PREFIX} \\
-    --disable-wallet \\
     --disable-tests \\
     --disable-gui-tests \\
     --disable-bench \\
@@ -93,4 +93,4 @@ SUBSCRIPT
 )
 
 cd "${EXTRACTED_FOLDER_PATH}"
-make -j${NPROC}
+SDKROOK=${SDKROOT} make -j${NPROC}

@@ -1,0 +1,38 @@
+From d0a829e9632379e42f0be5c554e3b692f0d14a95 Mon Sep 17 00:00:00 2001
+From: fanquake <fanquake@gmail.com>
+Date: Tue, 20 Oct 2020 17:10:45 +0800
+Subject: [PATCH] build: fix mutex detection when building bdb on macOS
+
+Starting with the Clang shipped with Xcode 12, Apple has enabled
+-Werror=implicit-function-declaration by default. This causes bdbs mutex
+detection to fail when building on macOS (not cross-compiling):
+
+checking for mutexes... UNIX/fcntl
+configure: WARNING: NO SHARED LATCH IMPLEMENTATION FOUND FOR THIS PLATFORM.
+configure: error: Unable to find a mutex implementation
+
+as previously emitted warnings are being turned into errors. i.e:
+
+error: implicitly declaring library function 'exit' with type 'void (int) __attribute__((noreturn))' [-Werror,-Wimplicit-function-declaration]
+
+Append -Wno-error=implicit-function-declaration to cflags so that
+-Wimplicit-function-declaration returns to being a warning, and the
+configure checks will succeed.
+
+Fixes #19411.
+---
+ depends/packages/bdb.mk | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/depends/packages/bdb.mk b/depends/packages/bdb.mk
+index 06cf974f75c18..5953341d9f774 100644
+--- a/depends/packages/bdb.mk
++++ b/depends/packages/bdb.mk
+@@ -10,6 +10,7 @@ define $(package)_set_vars
+ $(package)_config_opts=--disable-shared --enable-cxx --disable-replication
+ $(package)_config_opts_mingw32=--enable-mingw
+ $(package)_config_opts_linux=--with-pic
++$(package)_cflags+=-Wno-error=implicit-function-declaration
+ $(package)_cxxflags=-std=c++11
+ endef
+
