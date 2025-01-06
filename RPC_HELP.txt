@@ -1,0 +1,146 @@
+== Blockchain ==
+dumpbootstrap <destination> <endblock> [startblock=0]
+getbestblockhash
+getblock "blockhash" ( verbosity ) 
+getblockchaininfo
+getblockcount
+getblockhash height
+getblockheader "hash" ( verbose )
+getchaintips
+getdifficulty
+getheadercount
+getmempoolancestors txid (verbose)
+getmempooldescendants txid (verbose)
+getmempoolentry txid
+getmempoolinfo
+getrawmempool ( verbose )
+gettxout "txid" n ( include_mempool )
+gettxoutproof ["txid",...] ( blockhash )
+gettxoutsetinfo
+invalidateblock "blockhash"
+preciousblock "blockhash"
+pruneblockchain
+reconsiderblock "blockhash"
+verifychain ( checklevel nblocks )
+verifytxoutproof "proof"
+waitforblock <blockhash> (timeout)
+waitforblockheight <height> (timeout)
+waitfornewblock (timeout)
+
+== Control ==
+getinfo
+getmemoryinfo
+help ( "command" )
+stop
+
+== Generating ==
+generate nblocks ( maxtries )
+generatetoaddress nblocks address (maxtries)
+
+== Mining ==
+getblocktemplate ( TemplateRequest )
+getmininginfo
+getnetworkhashps ( nblocks height )
+getstakinginfo
+getsubsidy [nTarget]
+prioritisetransaction <txid> <priority delta> <fee delta>
+submitblock "hexdata" ( "jsonparametersobject" )
+
+== Network ==
+addnode "node" "add|remove|onetry"
+clearbanned
+disconnectnode "node" 
+getaddednodeinfo ( "node" )
+getconnectioncount
+getnettotals
+getnetworkinfo
+getpeerinfo
+listbanned
+ping
+setban "subnet" "add|remove" (bantime) (absolute)
+setnetworkactive true|false
+
+== Rawtransactions ==
+createrawtransaction [{"txid":"id","vout":n},...] {"address":amount,"data":"hex",...} ( locktime ) ( strClamSpeech )
+decoderawtransaction "hexstring"
+decodescript "hexstring"
+fundrawtransaction "hexstring" ( options )
+getrawtransaction "txid" ( verbose )
+sendrawtransaction "hexstring" ( allowhighfees )
+signrawtransaction "hexstring" ( [{"txid":"id","vout":n,"scriptPubKey":"hex","redeemScript":"hex"},...] ["privatekey1",...] sighashtype )
+
+== Util ==
+createmultisig nrequired ["key",...]
+estimatefee nblocks
+estimatepriority nblocks
+estimatesmartfee nblocks
+estimatesmartpriority nblocks
+getclamour <pid>
+getsupport [threshold=0] [window=10000] [block=<bestblock>]
+listclamours [minconf=1] [maxconf=9999999]
+setspeech <text>
+setstakespeech <text>
+setweightedstakespeech [path]
+signmessagewithprivkey "privkey" "message"
+validateaddress "address"
+validatepubkey <clampubkey>
+verifymessage "address" "signature" "message"
+
+== Wallet ==
+abandontransaction "txid"
+addmultisigaddress nrequired ["key",...] ( "account" )
+addwitnessaddress "address"
+backupwallet "destination"
+bumpfee "txid" ( options ) 
+createclamour <clamourProposal> [url]
+dumpprivkey "address"
+dumpwallet "filename"
+encryptwallet "passphrase"
+getaccount "address"
+getaccountaddress "account"
+getaddressesbyaccount "account"
+getbalance ( "account" minconf include_watchonly )
+getcombineany
+getnewaddress ( "account" )
+getnotarytransaction <notaryid> [multipleResults]
+getrawchangeaddress
+getreceivedbyaccount "account" ( minconf )
+getreceivedbyaddress "address" ( minconf )
+getrewardto
+getstakedbyaddress <clamaddress|*> [minconf=1]
+getstaketo
+gettransaction "txid" ( include_watchonly )
+getunconfirmedbalance
+getwalletinfo
+importaddress "address" ( "label" rescan p2sh )
+importmulti "requests" "options"
+importprivkey "clamprivkey" ( "label" ) ( rescan )
+importprunedfunds
+importpubkey "pubkey" ( "label" rescan )
+importwallet <file> [walletpassword] [rescan=true]
+importwalletdump "filename"
+keypoolrefill ( newsize )
+listaccounts ( minconf include_watchonly)
+listaddressgroupings
+listbalances [minconf=1] [maxconf=9999999] [mature=1]
+listlockunspent
+listreceivedbyaccount ( minconf include_empty include_watchonly)
+listreceivedbyaddress ( minconf include_empty include_watchonly)
+listsinceblock ( "blockhash" target_confirmations include_watchonly)
+listtransactions ( "account" count skip include_watchonly)
+listunspent ( minconf maxconf  ["addresses",...] [include_unsafe] )
+lockunspent unlock ([{"txid":"txid","vout":n},...])
+move "fromaccount" "toaccount" amount ( minconf "comment" )
+removeprunedfunds "txid"
+reservebalance [<reserve> [amount]]
+sendfrom "fromaccount" "toaddress" amount ( minconf "comment" "comment_to" "tx-comment")
+sendmany "fromaccount" {"address":amount,...} ( minconf "comment" ["address",...] )
+sendnotarytransaction <file>
+sendtoaddress "address" amount ( "comment" "comment_to" subtractfeefromamount [tx-comment])
+setaccount "address" "account"
+setcombineany [state]
+setrewardto [address]
+setstaketo [address]
+settxfee amount
+signmessage "address" "message"
+validateoutputs [{"txid":txid,"vout":n},...]
