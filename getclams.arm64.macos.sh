@@ -29,6 +29,7 @@ if [ ! -d "${EXTRACTED_FOLDER_PATH}" ]; then
         git am ../../patches/0001-Upgrade-boost-to-fix-github-boostorg-build-664.patch
         git am ../../patches/0002-modified-packages-openssl.mk.patch
         git am ../../patches/0003-toolset-clang.patch
+        git am ../../patches/0004-Add-ARM64-support.patch
         git am ../../patches/zlib-is-sneaky.patch
         git mv depends/ contrib/ && git commit -m 'git mv depends/ contrib/'
         # https://git.wownero.com/asymptotically/wownero/commit/7c7ccbd2a5379b18aeee1e8fec3c17edc43fc57e
@@ -90,3 +91,6 @@ cd ..
 ;
 SUBSCRIPT
 )
+
+cd "${EXTRACTED_FOLDER_PATH}"
+make -j${NPROC}
