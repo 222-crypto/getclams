@@ -1,0 +1,117 @@
+From 4f3ef69f7b0506b58388828daa8a6c464484ec92 Mon Sep 17 00:00:00 2001
+From: "Volm, David" <david.volm@base64labs.com>
+Date: Mon, 6 Jan 2025 06:37:04 -0600
+Subject: [PATCH] boost interface is shifting sand
+
+---
+ src/rpc/mining.cpp        | 8 ++++----
+ src/util.cpp              | 8 +++++---
+ src/validation.cpp        | 3 +++
+ src/validationinterface.h | 4 ++++
+ 4 files changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/src/rpc/mining.cpp b/src/rpc/mining.cpp
+index 0d2d6f1bf..25bfe5848 100644
+--- a/src/rpc/mining.cpp
++++ b/src/rpc/mining.cpp
+@@ -584,17 +584,17 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
+         // Release the wallet and main lock while waiting
+         LEAVE_CRITICAL_SECTION(cs_main);
+         {
+-            checktxtime = boost::get_system_time() + boost::posix_time::minutes(1);
+-
+             boost::unique_lock<boost::mutex> lock(csBestBlock);
++
+             while (chainActive.Tip()->GetBlockHash() == hashWatchedChain && IsRPCRunning())
+             {
+-                if (!cvBlockChange.timed_wait(lock, checktxtime))
++                // Wait with a 10-second timeout
++                if (cvBlockChange.wait_for(lock, boost::chrono::seconds(10)) == boost::cv_status::timeout)
+                 {
+                     // Timeout: Check transactions for update
+                     if (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLastLP)
+                         break;
+-                    checktxtime += boost::posix_time::seconds(10);
++                    // Continue with next wait iteration
+                 }
+             }
+         }
+diff --git a/src/util.cpp b/src/util.cpp
+index 78b83661b..05396ff17 100644
+--- a/src/util.cpp
++++ b/src/util.cpp
+@@ -84,6 +84,8 @@
+ #include <boost/program_options/detail/config_file.hpp>
+ #include <boost/program_options/parsers.hpp>
+ #include <boost/thread.hpp>
++#include <boost/thread/mutex.hpp>
++#include <boost/thread/lock_guard.hpp>
+ #include <openssl/crypto.h>
+ #include <openssl/rand.h>
+ #include <openssl/conf.h>
+@@ -219,7 +221,7 @@ static void DebugPrintInit()
+ void OpenDebugLog()
+ {
+     boost::call_once(&DebugPrintInit, debugPrintInitFlag);
+-    boost::mutex::scoped_lock scoped_lock(*mutexDebugLog);
++    boost::lock_guard<boost::mutex> guard(*mutexDebugLog);
+ 
+     assert(fileout == NULL);
+     assert(vMsgsBeforeOpenLog);
+@@ -315,7 +317,7 @@ int LogPrintStr(const std::string &str)
+     else if (fPrintToDebugLog)
+     {
+         boost::call_once(&DebugPrintInit, debugPrintInitFlag);
+-        boost::mutex::scoped_lock scoped_lock(*mutexDebugLog);
++        boost::lock_guard<boost::mutex> guard(*mutexDebugLog);
+ 
+         // buffer if we haven't opened the log yet
+         if (fileout == NULL) {
+@@ -1896,4 +1898,4 @@ bool LoadQuoteList()
+         quoteList.push_back (line);
+     }
+     return true;
+-}
+\ No newline at end of file
++}
+diff --git a/src/validation.cpp b/src/validation.cpp
+index 69ba3ad86..eb9c025ca 100644
+--- a/src/validation.cpp
++++ b/src/validation.cpp
+@@ -57,11 +57,14 @@
+ #include <boost/random/mersenne_twister.hpp>
+ #include <boost/random/uniform_int_distribution.hpp>
+ #include <boost/thread.hpp>
++#include <boost/bind/bind.hpp>
+ 
+ #if defined(NDEBUG)
+ # error "Clam cannot be compiled without assertions."
+ #endif
+ 
++using namespace boost::placeholders;
++
+ /**
+  * Global state
+  */
+diff --git a/src/validationinterface.h b/src/validationinterface.h
+index 9bf30b4db..bc847a9b0 100644
+--- a/src/validationinterface.h
++++ b/src/validationinterface.h
+@@ -6,10 +6,14 @@
+ #ifndef BITCOIN_VALIDATIONINTERFACE_H
+ #define BITCOIN_VALIDATIONINTERFACE_H
+ 
++#include <boost/bind/bind.hpp>
++#include <boost/bind/placeholders.hpp>
+ #include <boost/signals2/signal.hpp>
+ #include <boost/shared_ptr.hpp>
+ #include <memory>
+ 
++using namespace boost::placeholders;
++
+ class CBlock;
+ class CBlockIndex;
+ struct CBlockLocator;
+-- 
+2.39.5 (Apple Git-154)
+

@@ -30,6 +30,11 @@ if [ ! -d "${EXTRACTED_FOLDER_PATH}" ]; then
         git am ../../patches/0002-modified-packages-openssl.mk.patch
         git am ../../patches/0003-toolset-clang.patch
         git am ../../patches/0004-Add-ARM64-support.patch
+        git am ../../patches/0005-boost-interface-is-shifting-sand.patch
+        mv src/rpc/mining.cpp ../src/rpc/mining.cpp
+        mv src/util.cpp ../src/util.cpp
+        mv src/validation.cpp ../src/validation.cpp
+        mv src/validationinterface.h ../src/validationinterface.h
         git am ../../patches/20195.patch
         git am ../../patches/zlib-is-sneaky.patch
         git mv depends/ contrib/ && git commit -m 'git mv depends/ contrib/'
@@ -72,11 +77,16 @@ make -j${NPROC} NO_QT=true HOST=${HOST}
 cd ..
 
 ./configure \\
+    --host=${HOST} \\
     --prefix=${PREFIX} \\
     --disable-tests \\
     --disable-gui-tests \\
     --disable-bench \\
+    --disable-shared \\
     --enable-hardening \\
+    --without-libs \\
+    --with-utils \\
+    --with-daemon \\
     --with-boost=${BOOST_ROOT} \\
     --with-boost-libdir=${BOOST_LIBRARYDIR} \\
     --with-openssl=${PREFIX} \\
@@ -93,4 +103,4 @@ SUBSCRIPT
 )
 
 cd "${EXTRACTED_FOLDER_PATH}"
-SDKROOK=${SDKROOT} make -j${NPROC}
+bash -c "set -x && SDKROOT=${SDKROOT} make -j${NPROC} && make install"
